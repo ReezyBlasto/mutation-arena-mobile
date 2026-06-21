@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Compose drives the in-app theme; this is the launch/system-bar theme. -->
+    <style name="Theme.MutationArena" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#07090C</item>
+        <item name="android:navigationBarColor">#07090C</item>
+        <item name="android:windowBackground">#07090C</item>
+    </style>
+</resources>
