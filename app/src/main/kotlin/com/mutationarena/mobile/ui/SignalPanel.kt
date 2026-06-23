@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mutationarena.mobile.data.Action
+import com.mutationarena.mobile.data.AgentStats
 import com.mutationarena.mobile.data.Signal
 import com.mutationarena.mobile.ui.theme.Buy
 import com.mutationarena.mobile.ui.theme.Fg1
@@ -25,17 +26,21 @@ import com.mutationarena.mobile.ui.theme.Line2
 import com.mutationarena.mobile.ui.theme.Sell
 
 @Composable
-fun SignalPanel(signals: List<Signal>, modifier: Modifier = Modifier) {
+fun SignalPanel(
+    signals: List<Signal>,
+    stats: Map<String, AgentStats> = emptyMap(),
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (signals.isEmpty()) {
             Text("Run the models for a read on this market.", color = Fg3, fontSize = 13.sp)
         }
-        signals.forEach { SignalCard(it) }
+        signals.forEach { SignalCard(it, stats[it.model]) }
     }
 }
 
 @Composable
-private fun SignalCard(s: Signal) {
+private fun SignalCard(s: Signal, stats: AgentStats? = null) {
     val color = when (s.action) {
         Action.BUY -> Buy
         Action.SELL -> Sell
@@ -69,5 +74,22 @@ private fun SignalCard(s: Signal) {
             }
         }
         Text(s.reason, color = if (s.ok) Fg2 else Sell, fontSize = 13.sp)
+        if (stats != null && stats.totalCalls > 0) {
+            val wr = if (stats.wins + stats.losses > 0)
+                "${(stats.winRate * 100).toInt()}% win" else "no scored calls"
+            val wrColor = when {
+                stats.wins + stats.losses == 0 -> Fg3
+                stats.winRate >= 0.55 -> Buy
+                stats.winRate < 0.45 -> Sell
+                else -> Fg2
+            }
+            Text(
+                "W:${stats.wins}  L:${stats.losses}  $wr  ·  ACT:${(stats.actionRate * 100).toInt()}%" +
+                    if (stats.pending > 0) "  ·  ${stats.pending} pending" else "",
+                color = wrColor,
+                fontSize = 12.sp,
+                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+            )
+        }
     }
 }

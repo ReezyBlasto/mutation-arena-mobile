@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mutationarena.mobile.data.AccountabilityLogger
+import com.mutationarena.mobile.data.AgentStats
 import com.mutationarena.mobile.data.Candle
 import com.mutationarena.mobile.data.KrakenRepository
 import com.mutationarena.mobile.data.MARKETS
@@ -49,19 +51,24 @@ fun TradingScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val repo = remember { KrakenRepository() }
     val engine = remember { SignalEngine(context) }
+    val logger = remember { AccountabilityLogger(context) }
     val scope = rememberCoroutineScope()
 
     var market by remember { mutableStateOf(MARKETS.first()) }
     var tf by remember { mutableStateOf(5) } // minutes — scalping default 5m
     var candles by remember { mutableStateOf<List<Candle>>(emptyList()) }
     var signals by remember { mutableStateOf<List<Signal>>(emptyList()) }
+    var agentStats by remember { mutableStateOf<Map<String, AgentStats>>(emptyMap()) }
     var loading by remember { mutableStateOf(false) }
     var running by remember { mutableStateOf(false) }
 
     // (Re)load candles whenever the market or timeframe changes.
+    // Also score any pending signals against the fresh data.
     LaunchedEffect(market.pair, tf) {
         loading = true
         candles = repo.ohlc(market.pair, tf)
+        logger.evaluate(market.pair, tf, candles)
+        agentStats = listOf("Scout", "Analyst").associateWith { logger.stats(it) }
         loading = false
     }
 
@@ -127,6 +134,8 @@ fun TradingScreen(modifier: Modifier = Modifier) {
                         running = true
                         scope.launch {
                             signals = engine.signals(market.pair, candles)
+                            signals.forEach { logger.log(it, market.pair, tf, candles) }
+                            agentStats = listOf("Scout", "Analyst").associateWith { logger.stats(it) }
                             running = false
                         }
                     }
@@ -142,7 +151,7 @@ fun TradingScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        SignalPanel(signals)
+        SignalPanel(signals, agentStats)
     }
 }
 
