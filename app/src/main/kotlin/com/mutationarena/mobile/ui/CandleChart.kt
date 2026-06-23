@@ -43,7 +43,12 @@ fun CandleChart(candles: List<Candle>, modifier: Modifier = Modifier) {
             val slot = w / view.size
             val bodyW = (slot * 0.62f).coerceAtLeast(1f)
 
-            fun y(price: Double): Float = (h - ((price - lo) / span * h)).toFloat()
+            val volAreaH = h * 0.18f
+            val candleAreaH = h * 0.77f
+            val volTop = h - volAreaH
+            val maxVol = view.maxOf { it.volume }.takeIf { it > 0.0 } ?: 1.0
+
+            fun y(price: Double): Float = (candleAreaH - ((price - lo) / span * candleAreaH)).toFloat()
 
             view.forEachIndexed { i, c ->
                 val cx = i * slot + slot / 2f
@@ -64,6 +69,13 @@ fun CandleChart(candles: List<Candle>, modifier: Modifier = Modifier) {
                     color = color,
                     topLeft = Offset(cx - bodyW / 2f, top),
                     size = androidx.compose.ui.geometry.Size(bodyW, (bot - top).coerceAtLeast(1f)),
+                )
+                // volume bar
+                val barH = (c.volume / maxVol * volAreaH).toFloat().coerceAtLeast(1f)
+                drawRect(
+                    color = color.copy(alpha = 0.45f),
+                    topLeft = Offset(cx - bodyW / 2f, volTop + volAreaH - barH),
+                    size = androidx.compose.ui.geometry.Size(bodyW, barH),
                 )
             }
         }
