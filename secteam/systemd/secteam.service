@@ -1,0 +1,49 @@
+[Unit]
+Description=SecTeam Autonomous Security Operations Daemon
+Documentation=https://github.com/reezyblasto/mutation-arena-mobile/tree/claude/agentarium-repo-0jqd8u/secteam
+After=network.target ollama.service
+Wants=ollama.service
+
+[Service]
+Type=simple
+User=secteam
+Group=secteam
+WorkingDirectory=/opt/secteam
+
+# Entry point
+ExecStart=/opt/secteam/venv/bin/python -m secteam.daemon
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+# Environment
+EnvironmentFile=-/etc/secteam/secteam.env
+Environment=SECTEAM_DATA=/var/lib/secteam
+Environment=PYTHONUNBUFFERED=1
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=secteam
+
+# Security hardening of the daemon itself
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/secteam /var/log/secteam
+PrivateTmp=yes
+
+# Capabilities needed for security operations
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN CAP_SYS_PTRACE CAP_AUDIT_READ CAP_KILL CAP_DAC_READ_SEARCH
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN CAP_SYS_PTRACE CAP_AUDIT_READ CAP_KILL CAP_DAC_READ_SEARCH
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=2G
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target
