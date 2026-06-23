@@ -1,46 +1,45 @@
-# SecTeam Directives - Foundation Section (Updated for Credit & Organization)
+# SecTeam - Project Overview & Function (Clear Naming for Searchability)
 
-## Foundation from Claude's Original README (Core of This Project)
+## What This Project Is
+**Project Name**: SecTeam (Autonomous Cybersecurity Operations)
+**Core Function**: A self-aware, self-improving multi-agent Security Operations Center (SOC) built on Agentarium + Ollama.
 
-**This is the bedrock.** Everything we are building (wireless/BLE, offensive escalation, agent loops, etc.) rests on this foundation. We give it full credit and equal (or greater) organization because it is the solid base that must be gap-filled and tightened.
+It acts as an autonomous team of AI agents that:
+- Probes the system on startup for ground truth
+- Monitors in real time (logs, network, processes, filesystem)
+- Responds to threats with tiered actions (AUTO / REQUEST / QUEUE / INFORM)
+- Uses confidence scoring + research chain before acting
+- Gets smarter over time via knowledge base and fine-tuning
+- Now expanding with deep wireless/BLE/IoT integration and offensive deterrence capabilities
 
-### Original Claude README Summary (Recorded Here)
-- Self-aware, self-improving multi-agent SOC on Agentarium + Ollama.
-- Agents: coordinator (Alex - CISO), soc_analyst (Jordan), threat_intel (Sam), responder (Morgan), hardener (Riley), monitor (Casey), auditor (Drew), forensics (Blake), vuln_analyst (Quinn).
-- Architecture: Daemon with boot probe, audit loop (10min), monitor loop (continuous), response engine, event bus.
-- Core Systems: System probe, hardware probe, LLM probe, event_bus, response_engine, confidence, knowledge_base, system_context, model_manager, reporter.
-- Watchers: log_watcher, net_watcher, process_watcher, fs_watcher.
-- Confidence System: Per-action scoring + research chain (KB → man pages → dpkg → NVD/CVE → MITRE → etc.).
-- Response Tiers: AUTO / REQUEST / QUEUE / INFORM with timeout escalation.
-- LLM & Model Management: Hardware-aware model selection, fine-tuning pipeline.
-- Audit System: Full inventory (hardware, packages, services, ports, users, cron, firewall, SUID, world-writable, security tools, LLM stack).
-- Installation & CLI: setup.sh, main.py, status, audit, ask, events, report, tools, models, etc.
+**Why I Was Excited About the Original Claude README**:
+The original README described a very solid, mostly implemented foundation:
+- Full agent team with clear roles (CISO coordinator, SOC analyst, threat intel, responder, hardener, monitor, auditor, forensics, vuln analyst)
+- Clean architecture (daemon, audit loop, monitor loop, response engine, event bus)
+- Strong core systems (probes, watchers, confidence, KB, system_context, reporter)
+- Practical features (setup.sh, CLI, systemd service)
+- Smart design choices (confidence-gated actions, hardware-aware models, tiered responses with escalation)
 
-### Current Implementation Status (What Exists vs Unfinished)
-**Done (solid in current codebase)**:
-- Probes (system, hardware, LLM)
-- Watchers (log, net, process, fs)
-- Daemon, event bus, response engine, confidence, KB, system_context, reporter
-- Base agents and actions (research, response, hardening)
-- Models (SecurityEvent, ResponseMode, Severity, etc.)
-- Setup, systemd service, basic CLI
+That foundation is why we are building on it instead of starting from scratch. It is already battle-tested in structure.
 
-**Unfinished / Needs Gap-Filling (explicitly tracked here for organization)**:
-- YAML config (currently hardcoded defaults)
-- Full test suite
-- Web dashboard / command center
-- Multi-host support
-- Some watcher edge cases and advanced anomaly detection
-- Integration points for new wireless/BLE logic
+## Naming Conventions for Directives (Searchability & Clarity)
+To avoid confusion and make everything easy to find, we are using clear, descriptive naming:
+- `foundation_original_readme_summary.md` - Full summary of Claude's original README
+- `foundation_architecture.md` - Architecture diagram and flows
+- `foundation_agent_team.md` - Detailed agent roles and bios
+- `foundation_implementation_status.md` - What is done vs unfinished
+- `foundation_gaps.md` - Structured gap analysis for unfinished parts
+- `wireless_ble_integration.md` - Wireless and BLE addition details
+- `escalation_offensive_protocol.md` - Offensive escalation logic
+- `agent_loops_cron.md` - Agent loops and cron structure
+- `planning_gap_analysis.md` - Per-todo step discussions
+- `recording_log.md` - All insights and decisions
 
-**Action**: All unfinished items are now in `directives/foundation/gaps.md` for deliberate gap analysis and fleshing out. They get the same structured planning as new features.
+This makes searching and navigation much easier as the project grows.
 
-## How the Foundation is Organized in Directives
-- `directives/foundation/main.md` - Full summary + status
-- `directives/foundation/gaps.md` - Detailed gap analysis for unfinished parts
-- `directives/foundation/agents.md` - Agent roles and bios
-- `directives/foundation/architecture.md` - Diagrams and flows from original
+## How to Find Things
+- Foundation stuff is under `directives/foundation/`
+- New additions have clear names like `wireless_ble_...` or `escalation_...`
+- Planning and gaps have their own dedicated files
 
-This gives the foundational work the credit and organization it deserves. New additions (wireless, escalation, loops) build on top of a tight base.
-
-(Previous content on wireless, protocol, loops, etc. remains in their sections.)
+We are embedding key summaries directly in these files so you don't have to hunt through code or old READMEs.
